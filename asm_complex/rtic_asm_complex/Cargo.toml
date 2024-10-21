@@ -1,0 +1,43 @@
+[package]
+name = "rtic_asm_complex"
+version = "0.1.0"
+edition = "2021"
+resolver= "2"
+
+[dependencies]
+cortex-m = "0.7"
+cortex-m-rt = "0.7.3"
+cortex-m-rtic = { version = "1.1.4", features = ["test-critical-section"]}
+rtic-monotonic = { version = "1.0" }
+systick-monotonic = { version = "1.0.1" }
+rtt-target = "0.5.0"
+embedded-hal = "1.0.0"
+embedded-hal-bus = "0.2.0"
+nb = "1" 
+defmt = { version = "0.3.8", features = ["encoding-rzcobs"] }
+defmt-brtt = { version = "0.1", default-features = false, features = ["rtt"] }
+panic-probe = { version = "0.3", features = ["print-defmt"] }
+embedded-graphics = "0.8.1"
+st7735-lcd = "0.10.0" 
+fugit = "0.3.7"
+complex_nums_wrapper = {path="../complex_nums_wrapper"}
+stm32_i2s_v12x = "0.5.1"
+
+
+[dependencies.num-complex]
+version = "0.4"
+default-features = false
+features = ["libm"]
+
+[dependencies.stm32f4xx-hal]
+version = "0.21.0"
+features = ["stm32f429", "i2s", "rtic1"] 
+
+
+[profile.dev]
+debug = 2
+debug-assertions = true
+incremental = false
+opt-level = "s" 
+overflow-checks = true
+
