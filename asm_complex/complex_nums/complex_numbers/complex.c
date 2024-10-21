@@ -1,11 +1,14 @@
 #include "complex.h"
 
 /*
-As a reference for the Constraints, used in asm code:
+As a reference for the Constraints, used in the following asm functions:
 https://gcc.gnu.org/onlinedocs/gcc/Machine-Constraints.html
 
-ARM FPU Isa:
+ARM FPU ISA:
 https://developer.arm.com/documentation/ddi0439/b/Floating-Point-Unit/FPU-Functional-Description/FPU-instruction-set
+
+In addition, the following code has been inspired by:
+https://docs.rs/num-complex/latest/src/num_complex/lib.rs.html#811
 */
 
 void init(){

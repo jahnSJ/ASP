@@ -60,9 +60,7 @@ impl Sub<MyComplex> for MyComplex{
 impl Div<MyComplex> for MyComplex{
 
     type Output = Self;
-    /*
-        from: https://www.studysmarter.de/schule/mathe/algebra/komplexe-zahlen/ 
-    */
+
     fn div(self, nenner: Self) -> Self::Output{
 
         let mut real = [0.0];
@@ -78,7 +76,7 @@ impl Div<MyComplex> for MyComplex{
         	let mut divident_as_num = [0.0];
         	add_f32(&divident_part_one, &divident_part_two, &mut divident_as_num);
         	
-        	let divident = [1.0/divident_as_num[0]];//there is sadly no division for f32 in cmsis, but how does it get executed??
+        	let divident = [1.0/divident_as_num[0]];
         	
         	let real_part_one = [result[2]];
         	let real_part_two = [result[3]];
