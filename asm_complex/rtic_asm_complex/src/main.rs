@@ -4,9 +4,6 @@
 /*
 Examples I used:
 https://github.com/stm32-rs/stm32f4xx-hal/blob/master/examples/rtic-i2s-audio-in-out.rs
-https://docs.rs/stm32_i2s_v12x/0.5.1/stm32_i2s_v12x/all.html
-
-https://github.com/stm32-rs/stm32f4xx-hal/blob/master/examples/pwm-sinus.rs
 */
 
 use defmt_brtt as _; // global logger
@@ -18,19 +15,19 @@ mod fft;
 mod vad;
 mod vad_utils;
 
-const BUFFER_SIZE: usize = 512;
-const SAMPLING_RATE : usize = 6_000;
+const BUFFER_SIZE: usize = 640;
+const SAMPLING_RATE : usize = 8_000;
 
 const FRAME_DURATION :f32 = 0.01;
-const FRAME_LENGTH:usize = (FRAME_DURATION * SAMPLING_RATE as f32) as usize + 4;
+const FRAME_LENGTH:usize = (FRAME_DURATION * SAMPLING_RATE as f32) as usize + 48;
 const ACTUAL_FRAME_LENGTH :usize = (FRAME_DURATION * SAMPLING_RATE as f32) as usize;
 const NUMBER_OF_FRAMES :usize = BUFFER_SIZE / FRAME_LENGTH;
 
 #[rtic::app(device = stm32f4xx_hal::pac, peripherals = true, dispatchers = [EXTI0, EXTI1, EXTI2])]
 mod app {
 
-    const BUFFER_SIZE: usize = 512;
-    const SAMPLING_RATE : usize = 6_000;
+    const BUFFER_SIZE: usize = 640;
+    const SAMPLING_RATE : usize = 8_000;
 
     use core::f32::consts::PI;
 
@@ -74,7 +71,6 @@ mod app {
     type I2STransfer =  I2sTransfer<I2s<SPI2>, Master, Receive, Philips, Data16Channel32>;
     
     type SpiDisplay = ST7735<ExclusiveDevice<Spi<SPI1>,Pin<'D', 14, gpio::Output>, SysDelay>, Pin<'D', 15, gpio::Output>, Pin<'F', 12, gpio::Output>>;
-    //type Count = stm32f4xx_hal::timer::Counter<TIM2, 1000000>;
 
     #[shared]
     struct Shared{
@@ -82,8 +78,6 @@ mod app {
         i2s_transfer : I2STransfer,
         #[lock_free]
         display : SpiDisplay,
-       // #[lock_free]
-        //count : Count
     }
 
     #[local]
@@ -105,11 +99,10 @@ mod app {
         */
         let clocks = rcc.cfgr
                 .use_hse(8.MHz())
-                .sysclk(96.MHz())
+                .sysclk(100.MHz())
                 .i2s_clk(61440.kHz())
                 .freeze();
                 
-       // let counter = dp.TIM2.counter_us(&clocks);
         
         let gpioa = dp.GPIOA.split();
         let gpiob = dp.GPIOB.split();
@@ -181,7 +174,6 @@ mod app {
             Shared {
                 i2s_transfer: transfer,
                 display : display,
-                //count : counter
             },
             Local {
                 
@@ -191,7 +183,6 @@ mod app {
     }
 
 
-    //#[idle(shared = [display,i2s_transfer, count], local = [])]
     #[idle(shared = [display,i2s_transfer], local = [])]
     fn idle(cx: idle::Context) -> ! {
 
@@ -233,11 +224,7 @@ mod app {
                 }
             }
 
-          //  let _ = counter.start(100.micros()).unwrap();
-
             let data = vad::vad(frames);
-
-           // let c = counter.now().ticks();
             
             /*
                 Display the audio data

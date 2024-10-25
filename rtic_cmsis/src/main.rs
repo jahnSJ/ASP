@@ -16,7 +16,7 @@ mod vad;
 mod vad_utils;
 mod my_cmsis_complex;
 
-const BUFFER_SIZE: usize = 1024;
+const BUFFER_SIZE: usize = 640;
 const SAMPLING_RATE : usize = 8_000;
 
 const FRAME_DURATION :f32 = 0.01;
@@ -27,7 +27,7 @@ const NUMBER_OF_FRAMES :usize = BUFFER_SIZE / FRAME_LENGTH;
 #[rtic::app(device = stm32f4xx_hal::pac, peripherals = true, dispatchers = [EXTI0, EXTI1, EXTI2])]
 mod app {
 
-    const BUFFER_SIZE: usize = 1024;
+    const BUFFER_SIZE: usize = 640;
     const SAMPLING_RATE : usize = 8_000;
 
     use core::f32::consts::PI;
@@ -94,10 +94,9 @@ mod app {
 
         let clocks = rcc.cfgr
                 .use_hse(8.MHz())
-                .sysclk(84.MHz())
+                .sysclk(100.MHz())
                 .i2s_clk(61440.kHz())
                 .freeze();
-         
         
         let gpioa = dp.GPIOA.split();
         let gpiob = dp.GPIOB.split();
