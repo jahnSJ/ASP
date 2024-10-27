@@ -10,9 +10,7 @@ fn main() {
     .flag("-mthumb").flag("-march=armv7e-m").flag("-mfloat-abi=hard")
     .flag("-mfpu=fpv4-sp-d16").flag("-nostdlib").compile("complex_numbers-c");
 
-   // let iter = ["--target=thumbv7em-none-eabihf", "-mthumb", "-march=armv7e-m","-mfloat-abi=hard", "-mfpu=fpv4-sp-d16", "-nostdlib"].iter();
-
-    let bindings =  builder()//.clang_args(iter)
+    let bindings =  builder()
         .header("wrapper.h")
         .use_core()
         .ctypes_prefix("core::ffi")
